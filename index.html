@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8eb">
+<title>王德福 · 今天这顿吃回本了吗？</title>
+<style>
+  :root{
+    --bg:#EDEFE9;
+    --surface:#FDFDFB;
+    --line:#C7CEC3;
+    --line-soft:#DDE2D8;
+    --ink:#12180F;
+    --ink-2:#4A544A;
+    --ink-3:#8A938A;
+    --good:#1F5C46;
+    --bad:#9C3B2A;
+    --accent:#1F5C46;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+    font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;
+  }
+  .shell{max-width:460px;margin:0 auto;min-height:100vh;background:var(--bg);
+    border-left:1px solid var(--line-soft);border-right:1px solid var(--line-soft);
+    display:flex;flex-direction:column}
+
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+    padding:13px 18px 12px;display:flex;align-items:center;gap:10px}
+  .mark{width:9px;height:9px;background:var(--accent);flex:0 0 auto}
+  .brand{flex:1;min-width:0}
+  .brand h1{margin:0;font-size:15px;font-weight:600;letter-spacing:.02em}
+  .brand p{margin:2px 0 0;font-size:10px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .chip{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-family:var(--mono);
+    font-size:11px;padding:6px 9px;cursor:pointer;border-radius:1px;white-space:nowrap}
+  .gear{border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    width:30px;height:30px;font-size:13px;line-height:1;cursor:pointer;border-radius:1px;flex:0 0 auto}
+
+  main{flex:1;padding:0 18px}
+  .hide{display:none !important}
+
+  /* start view */
+  .start{padding:28px 0 24px}
+  .start .lead{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+  .start h2{margin:0 0 6px;font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+  .start .sub{margin:0 0 26px;font-size:12px;color:var(--ink-3);line-height:1.6}
+  .block{border:1px solid var(--line);background:var(--surface);padding:12px 14px 14px;margin-bottom:12px}
+  .block label{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px}
+  .stepper{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--bg)}
+  .stepper button{width:44px;border:0;background:transparent;font-size:19px;color:var(--ink);
+    cursor:pointer;font-family:var(--mono);padding:0;line-height:1}
+  .stepper button:active{background:var(--line-soft)}
+  .stepper input{flex:1;min-width:0;width:100%;border:0;background:transparent;text-align:center;
+    font-family:var(--mono);font-size:18px;color:var(--ink);padding:10px 0;outline:none}
+  .money{display:flex;align-items:center;border:1px solid var(--line);background:var(--bg);padding:0 12px}
+  .money span{font-family:var(--mono);font-size:14px;color:var(--ink-3)}
+  .money input{flex:1;min-width:0;border:0;background:transparent;font-family:var(--mono);
+    font-size:18px;color:var(--ink);padding:10px 8px;outline:none;text-align:right}
+  .go{width:100%;border:0;background:var(--ink);color:#fff;padding:16px;font-size:15px;
+    letter-spacing:.08em;cursor:pointer;border-radius:1px;margin-top:6px}
+  .go:active{opacity:.85}
+  .resume{width:100%;border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    padding:13px;font-size:13px;cursor:pointer;border-radius:1px;margin-top:10px;font-family:inherit}
+  .start .tip{margin:18px 0 0;font-size:11px;color:var(--ink-3);line-height:1.7}
+
+  /* rows */
+  .rows{padding:10px 0 6px}
+  .row{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line-soft);padding:11px 0}
+  .row:first-child{border-top:1px solid var(--line-soft)}
+  .row.on{background:#F1F6EC}
+  .rimg{width:54px;height:54px;flex:0 0 auto;border:1px solid var(--line-soft);
+    background:repeating-linear-gradient(135deg,#E4E8E0 0 1px,transparent 1px 7px);
+    display:flex;align-items:center;justify-content:center}
+  .rimg b{font-family:var(--mono);font-size:14px;color:#AEB6AB;font-weight:400}
+  .row.on .rimg{border-color:var(--accent)}
+  .row.on .rimg b{color:var(--accent)}
+  .rmain{flex:1;min-width:0}
+  .rname{font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rprice{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:3px}
+  .stepper.sm{border-color:var(--line);flex:0 0 auto;width:132px}
+  .stepper.sm button{width:40px;font-size:16px}
+  .stepper.sm input{font-size:16px;padding:8px 0}
+  .footnote{padding:14px 0 20px;font-size:10px;color:var(--ink-3);line-height:1.7}
+
+  /* dock */
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bg);border-top:1px solid var(--ink)}
+  .dock-in{max-width:460px;margin:0 auto;padding:0 18px calc(6px + env(safe-area-inset-bottom,0px))}
+  .dockgrid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;padding:11px 0 12px}
+  .dcell{cursor:pointer}
+  .dcell .k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:2px}
+  .dcell .v{font-family:var(--mono);font-size:16px;letter-spacing:-.02em;display:block}
+  .dcell .v.big{font-size:20px}
+  .dcell .v.good{color:var(--good)}
+  .dcell .v.bad{color:var(--bad)}
+  .dcell .sub{font-family:var(--mono);font-size:10px;color:var(--ink-3);display:block;margin-top:2px}
+  .confirm{border:0;background:var(--ink);color:#fff;font-size:13px;letter-spacing:.1em;
+    padding:13px 16px;cursor:pointer;border-radius:1px;font-family:inherit;white-space:nowrap}
+  .confirm:active{opacity:.85}
+  .confirm[disabled]{background:var(--line);color:#fff;cursor:not-allowed}
+  .bar{height:3px;background:var(--line-soft);position:relative;margin-bottom:2px}
+  .bar em{position:absolute;left:0;top:0;bottom:0;background:var(--accent);display:block}
+
+  /* sheet */
+  .veil{position:fixed;inset:0;background:rgba(18,24,15,.42);z-index:50;display:none;
+    align-items:flex-end;justify-content:center}
+  .veil.on{display:flex}
+  .sheet{width:100%;max-width:460px;background:var(--surface);border-top:1px solid var(--ink);
+    max-height:92vh;overflow-y:auto}
+  .sheet-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);
+    padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:2}
+  .sheet-head h3{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em}
+  .x{border:1px solid var(--line);background:transparent;width:28px;height:28px;cursor:pointer;
+    font-size:14px;line-height:1;color:var(--ink-2);border-radius:1px}
+  .sheet-body{padding:16px 18px 26px}
+
+  /* verdict */
+  .verdict{position:relative;border:1px solid var(--ink);padding:20px 18px 18px;margin-bottom:18px;overflow:hidden}
+  .verdict .pct{font-family:var(--mono);font-size:52px;line-height:.95;letter-spacing:-.04em}
+  .verdict .pct i{font-style:normal;font-size:22px;letter-spacing:0;margin-left:2px}
+  .verdict .vline{font-size:13px;color:var(--ink-2);margin-top:10px}
+  .verdict .vline.strong{font-size:19px;font-weight:600;color:var(--ink);margin-top:12px;letter-spacing:-.01em}
+  .verdict.hit .vline.strong{color:var(--good)}
+  .verdict.miss .vline.strong{color:var(--bad)}
+  .verdict .small{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:6px}
+  .verdict.hit{border-color:var(--good)}
+  .verdict.hit .pct{color:var(--good)}
+  .verdict.miss{border-color:var(--bad)}
+  .verdict.miss .pct{color:var(--bad)}
+  .stamp{position:absolute;top:14px;right:12px;border:2px solid currentColor;padding:5px 9px;
+    font-size:12px;letter-spacing:.18em;transform:rotate(-8deg);opacity:.85;border-radius:2px}
+  .verdict.hit .stamp{color:var(--good)}
+  .verdict.miss .stamp{color:var(--bad)}
+  .stamp.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{
+    0%{transform:rotate(-8deg) scale(2.1);opacity:0}
+    60%{transform:rotate(-8deg) scale(.96);opacity:.95}
+    100%{transform:rotate(-8deg) scale(1);opacity:.85}
+  }
+
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--line);margin-bottom:18px}
+  .stats div{padding:10px 12px;border-right:1px solid var(--line)}
+  .stats div:last-child{border-right:0}
+  .stats .k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:3px}
+  .stats .v{font-family:var(--mono);font-size:14px}
+
+  .li{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dotted var(--line)}
+  .li .l{font-size:13px}
+  .li .r{font-family:var(--mono);font-size:13px}
+  .li .r em{font-style:normal;color:var(--ink-3);font-size:11px;margin-right:8px}
+  .empty{font-size:12px;color:var(--ink-3);padding:14px 0}
+  .note{font-size:10px;color:var(--ink-3);line-height:1.6;padding:14px 0 0}
+  .rowbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .rowbtns button{padding:14px;font-size:13px;letter-spacing:.06em;cursor:pointer;border-radius:1px;font-family:inherit}
+  .rowbtns .ghost{border:1px solid var(--line);background:transparent;color:var(--ink-2)}
+  .rowbtns .dark{border:0;background:var(--ink);color:#fff}
+
+  /* settings */
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-bottom:16px}
+  .tabs button{border:0;border-right:1px solid var(--line);background:transparent;padding:9px 2px;
+    font-size:11px;color:var(--ink-3);cursor:pointer}
+  .tabs button:last-child{border-right:0}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .tabs button:disabled{opacity:.45;cursor:not-allowed}
+  .cfgrow{border-bottom:1px solid var(--line-soft);padding:11px 0}
+  .cfgrow .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .cfgrow .top b{font-size:13px;font-weight:600}
+  .cfgrow .top span{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .cfginputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cfginputs label{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:4px}
+  .cfginputs input{width:100%;border:1px solid var(--line);background:var(--bg);padding:8px;
+    font-family:var(--mono);font-size:14px;color:var(--ink);outline:none}
+  .warn{background:#F6F1E4;border:1px solid #E0D6BC;padding:10px 12px;font-size:11px;
+    color:#6B5B33;line-height:1.55;margin-bottom:16px}
+  .save{width:100%;border:0;background:var(--ink);color:#fff;padding:14px;font-size:14px;
+    letter-spacing:.06em;cursor:pointer;margin-top:18px;border-radius:1px}
+  .codebox{display:flex;gap:8px;margin-top:6px}
+  .codebox input{flex:1;border:1px solid var(--line);background:var(--bg);padding:12px;
+    font-family:var(--mono);font-size:16px;letter-spacing:.3em;text-align:center;outline:none;color:var(--ink)}
+  .codebox button{border:0;background:var(--ink);color:#fff;padding:0 20px;font-size:13px;cursor:pointer}
+  .hint{font-size:11px;color:var(--ink-3);margin-top:10px;line-height:1.6}
+  .disabled-note{font-size:12px;color:var(--ink-3);padding:24px 0;text-align:center;line-height:1.7}
+</style>
+<link rel="stylesheet" href="style.css">
+<style>
+  [hidden]{display:none!important}.net-status,.entry-error{font-size:12px;line-height:1.5}
+  .net-status{color:#775d4b;margin:10px 0 3px}.entry-error{color:#a82d24;margin:0}
+  .go:disabled{opacity:.55;cursor:wait}.rmeta{font-size:10px;color:#7d624f;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <span class="mark"></span>
+    <div class="brand">
+      <h1>王德福</h1>
+      <p>自助小账本 · 数据为示例</p>
+    </div>
+    <button class="chip hide" id="editChip">2 人 · ¥258</button>
+
+  </header>
+
+  <!-- 进入前 -->
+  <main id="viewStart" class="start">
+    <section class="hero" aria-label="自助餐肉类回本计算器">
+      <div class="hero-copy">
+        <p class="hero-eyebrow"><span>✳</span> 自助小账本</p>
+        <h2>今天这顿<br><strong>吃回本了吗？</strong></h2>
+        <p class="hero-sub">一盘一盘记，<br>快乐慢慢攒。</p>
+      </div>
+      <span class="hero-stamp" aria-hidden="true">肉肉<br>开吃</span>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 230 205" xmlns="http://www.w3.org/2000/svg">
+          <path d="M89 31c-8-12 8-15 2-26M122 33c-8-12 8-15 2-26M154 34c-7-10 7-14 2-24" fill="none" stroke="#e68155" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+          <path d="M42 67c-24-5-29 3-25 14 2 6 10 9 24 10M188 67c24-5 29 3 25 14-2 6-10 9-24 10" fill="none" stroke="#6f3c30" stroke-width="12" stroke-linecap="round"/>
+          <ellipse cx="115" cy="176" rx="74" ry="10" fill="#bd6d3c" opacity=".25"/>
+          <path d="M34 73c3 67 22 100 81 100s78-33 81-100Z" fill="#e96545" stroke="#703e30" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M45 100c5 38 19 60 40 66" fill="none" stroke="#ff9d73" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+          <ellipse cx="115" cy="74" rx="81" ry="36" fill="#fff5da" stroke="#703e30" stroke-width="6"/>
+          <ellipse cx="115" cy="73" rx="69" ry="26" fill="#de6945"/>
+          <path d="M52 76c14-13 31-16 44-7 12 8 23 9 37 1 16-9 33-5 44 5-8 15-32 24-62 24S61 90 52 76Z" fill="#f5a45d"/>
+          <path d="M74 62c8-10 20-12 27-4s-1 17-10 19c-11 3-23-6-17-15Z" fill="#ef9a82" stroke="#b95646" stroke-width="3"/>
+          <path d="M81 63c5 0 9 3 11 7M137 57c8-8 19-8 25-1s0 16-10 18c-11 1-21-8-15-17Z" fill="#f3ae96" stroke="#c25e4b" stroke-width="3" stroke-linecap="round"/>
+          <path d="M145 60c4-1 8 1 10 4" fill="none" stroke="#fff0da" stroke-width="3" stroke-linecap="round"/>
+          <path d="M105 51c-3-10 3-17 9-17 0 7 2 11 8 14 4-9 12-9 16-5-1 10-7 16-15 18" fill="#67a95a" stroke="#447749" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="61" cy="77" r="4" fill="#fff0bc"/><circle cx="172" cy="79" r="4" fill="#fff0bc"/><circle cx="116" cy="84" r="3" fill="#fff0bc"/>
+          <circle cx="93" cy="125" r="4" fill="#633b2e"/><circle cx="137" cy="125" r="4" fill="#633b2e"/>
+          <path d="M105 136c6 7 14 7 20 0" fill="none" stroke="#633b2e" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="81" cy="135" rx="8" ry="4" fill="#f99e83"/><ellipse cx="149" cy="135" rx="8" ry="4" fill="#f99e83"/>
+          <path d="M34 37l3 7 7 3-7 3-3 7-3-7-7-3 7-3ZM191 34l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#fff8dc"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="start-card" aria-label="填写就餐信息">
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true">✎</span>
+        <div><h3>先安排一下这一桌</h3><p>填完就可以开始记肉啦</p></div>
+      </div>
+      <div class="block">
+        <div class="field-label"><label for="people">几个人吃</label><small>一起记录这一桌</small></div>
+        <div class="stepper">
+          <button data-step="people" data-dir="-1" aria-label="减少人数">−</button>
+          <input id="people" type="text" inputmode="numeric" value="2" aria-label="就餐人数">
+          <button data-step="people" data-dir="1" aria-label="增加人数">+</button>
+        </div>
+      </div>
+      <div class="block">
+        <div class="field-label"><label for="spend">这一桌花了</label><small>填实际支付的金额</small></div>
+        <div class="money"><span>¥</span><input id="spend" type="text" inputmode="decimal" value="" placeholder="实际支付金额" aria-label="全桌实际支付金额"></div>
+      </div>
+      <p class="net-status" id="priceStatus" role="status">正在读取示例肉价…</p>
+      <button class="resume" id="retryPrices" type="button" hidden>重新读取肉价</button>
+      <p class="entry-error" id="entryError" role="status"></p>
+      <button class="go" id="startBtn" disabled>开始记这一餐&nbsp; →</button>
+      <button class="resume hide" id="resumeBtn" disabled></button>
+    </section>
+    <p class="tip"><span class="tip-star" aria-hidden="true">✦</span><span>试用使用示例肉价和每盘 120 克的示例净重。</span></p>
+  </main>
+
+  <!-- 记录页 -->
+  <main id="viewRecord" class="hide">
+    <div class="record-intro">
+      <div><p class="record-eyebrow">今天的肉肉小账本</p><h2>拿一盘，记一盘 <span>✦</span></h2><p>吃了什么，轻轻一点就记下</p></div>
+      <span class="record-stamp" aria-hidden="true">🍽</span>
+    </div>
+    <div class="list-heading"><strong>今天吃了这些</strong><span>套餐内六种肉 · 示例数据</span></div>
+    <div class="rows" id="rows"></div>
+    <p class="footnote">按老板提供的每斤进价与每盘生重估算，只含肉类，不代表整顿饭的价值。</p>
+  </main>
+</div>
+
+<div class="dock hide" id="dock">
+  <div class="dock-in">
+    <div class="dockgrid">
+      <div class="dcell" id="tapCost">
+        <span class="k">肉成本</span>
+        <span class="v big" id="sCost">¥0</span>
+        <span class="sub" id="sPaidSub">已付 ¥0</span>
+      </div>
+      <div class="dcell" id="tapDiff" style="text-align:left">
+        <span class="k" id="sDiffK">还差</span>
+        <span class="v" id="sDiff">¥0</span>
+      </div>
+      <button class="confirm" id="confirmBtn">确认吃完</button>
+    </div>
+    <div class="bar"><em id="barFill" style="width:0%"></em></div>
+  </div>
+</div>
+
+<!-- 结果 / 明细 -->
+<div class="veil" id="veilResult">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="resultTitle">这一餐的结果</h3>
+      <button class="x" data-close="veilResult">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="verdictBox"></div>
+      <div class="stats" id="statsBox"></div>
+      <div id="detail"></div>
+      <div class="note">按老板提供的每斤进价与每盘生重估算，只含肉类，不代表整顿饭的价值，也不是店铺的盈亏。</div>
+      <div class="rowbtns">
+        <button class="ghost" id="closeResult">继续记</button>
+        <button class="dark" id="newMeal">开新的一餐</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="result-effects.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var LS_KEY = "wangdefu-customer-trial-v1";
+  var priceUrl = "https://wangdefu-price-test.weiaini0519.workers.dev/prices";
+  var ready = false, reading = false;
+
+  var DEFAULT_MEATS = [
+    { id:"m1", name:"猪肉",           grams:120 },
+    { id:"m2", name:"猪高钙",         grams:120 },
+    { id:"m3", name:"原切梅花",       grams:120 },
+    { id:"m4", name:"原切谷饲眼肉",   grams:120 },
+    { id:"m5", name:"原切松板",       grams:120 },
+    { id:"m6", name:"奥尔良鸡肉",     grams:120 }
+  ];
+
+  function freshSession(){
+    return { people:2, spend:"", counts:{}, started:false, startedAt:0, finishedAt:0 };
+  }
+
+  var state = load();
+
+  function load(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(raw){
+        var o = JSON.parse(raw);
+        var s = o.session || freshSession();
+        if(!s.counts) s.counts = {};
+        if(typeof s.started !== "boolean") s.started = false;
+        if(!s.startedAt) s.startedAt = 0;
+        if(!s.finishedAt) s.finishedAt = 0;
+        return { meats:[], session:s };
+      }
+    }catch(e){}
+    return { meats:[], session:freshSession() };
+  }
+
+  function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({session:state.session})); }catch(e){} }
+
+  function unitCost(m){
+    var p = Number(m.price) || 0, g = Number(m.grams) || 0;
+    return p / 500 * g;
+  }
+  function money(n){
+    return window.BuffetResultEffects.formatMoney(n);
+  }
+  function pad2(n){ return n < 10 ? "0" + n : String(n); }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c];
+    });
+  }
+  function hhmm(ts){
+    var d = new Date(ts);
+    return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
+  }
+
+  var rowsEl    = document.getElementById("rows");
+  var viewStart = document.getElementById("viewStart");
+  var viewRec   = document.getElementById("viewRecord");
+  var dock      = document.getElementById("dock");
+  var editChip  = document.getElementById("editChip");
+  var resumeBtn = document.getElementById("resumeBtn");
+  var confirmBtn= document.getElementById("confirmBtn");
+
+  function totalPlates(){
+    var n = 0;
+    for(var k in state.session.counts){ n += state.session.counts[k] || 0; }
+    return n;
+  }
+
+  /* rows */
+  function renderRows(){
+    rowsEl.innerHTML = "";
+    state.meats.forEach(function(m, i){
+      var n = state.session.counts[m.id] || 0;
+      var row = document.createElement("div");
+      row.className = "row" + (n > 0 ? " on" : "");
+      row.setAttribute("data-id", m.id);
+      row.innerHTML =
+        '<div class="rimg"><b>' + pad2(i+1) + '</b></div>' +
+        '<div class="rmain">' +
+          '<div class="rname">' + esc(m.name) + '</div>' +
+          '<div class="rprice">¥' + unitCost(m).toFixed(2) + ' / 盘</div>' +
+          '<div class="rmeta">' + m.price + ' 元/斤 · ' + m.grams + ' 克/盘</div>' +
+        '</div>' +
+        '<div class="stepper sm">' +
+          '<button data-meat="' + m.id + '" data-dir="-1" aria-label="减一盘">−</button>' +
+          '<input data-meat="' + m.id + '" type="text" inputmode="numeric" value="' + n + '">' +
+          '<button data-meat="' + m.id + '" data-dir="1" aria-label="加一盘">+</button>' +
+        '</div>';
+      rowsEl.appendChild(row);
+    });
+  }
+
+  function syncRow(id){
+    var row = rowsEl.querySelector('.row[data-id="' + id + '"]');
+    if(!row) return;
+    var n = state.session.counts[id] || 0;
+    var inp = row.querySelector("input");
+    if(inp && document.activeElement !== inp) inp.value = n;
+    row.classList.toggle("on", n > 0);
+  }
+
+  /* totals */
+  function totals(){
+    var cost = 0, items = [];
+    state.meats.forEach(function(m){
+      var n = state.session.counts[m.id] || 0;
+      if(n > 0){
+        var sub = n * unitCost(m);
+        cost += sub;
+        items.push({ name:m.name, n:n, sub:sub });
+      }
+    });
+    items.sort(function(a,b){ return b.sub - a.sub; });
+    var paid = Number(state.session.spend) || 0;
+    return { cost:cost, paid:paid, diff:cost - paid, items:items };
+  }
+
+  function renderSummary(){
+    var t = totals();
+    document.getElementById("sCost").textContent = money(t.cost);
+    document.getElementById("sPaidSub").textContent = "已付 " + money(t.paid);
+
+    var d  = document.getElementById("sDiff");
+    var dk = document.getElementById("sDiffK");
+    d.classList.remove("good","bad");
+    if(t.diff >= 0){ d.textContent = "+" + money(t.diff); d.classList.add("good"); dk.textContent = "已超出"; }
+    else { d.textContent = money(-t.diff); d.classList.add("bad"); dk.textContent = "还差"; }
+
+    var pct = t.paid > 0 ? (t.cost / t.paid * 100) : 0;
+    var fill = document.getElementById("barFill");
+    fill.style.width = Math.max(0, Math.min(100, pct)) + "%";
+    fill.style.background = (t.diff >= 0) ? "var(--good)" : "var(--bad)";
+
+    confirmBtn.disabled = (totalPlates() === 0);
+  }
+
+  function renderChip(){
+    editChip.textContent = (state.session.people || 0) + " 人 · " + money(Number(state.session.spend) || 0);
+  }
+
+  function renderView(){
+    var started = !!state.session.started;
+    viewStart.classList.toggle("hide", started);
+    viewRec.classList.toggle("hide", !started);
+    dock.classList.toggle("hide", !started);
+    editChip.classList.toggle("hide", !started);
+    document.querySelector(".shell").style.paddingBottom = started ? "112px" : "0";
+
+    document.getElementById("people").value = state.session.people || 2;
+    document.getElementById("spend").value  = state.session.spend || "";
+
+    var plates = totalPlates();
+    if(plates > 0){
+      resumeBtn.classList.remove("hide");
+      var label = "继续这餐（已记 " + plates + " 盘";
+      if(state.session.finishedAt) label += " · " + hhmm(state.session.finishedAt) + " 已确认";
+      label += "）";
+      resumeBtn.textContent = label;
+    }else{
+      resumeBtn.classList.add("hide");
+    }
+    renderChip();
+  }
+
+  function renderAll(){ renderRows(); renderSummary(); renderView(); }
+
+  /* 任何加减盘都视为"这一餐还没结束" */
+  function touchSession(){
+    if(state.session.finishedAt) state.session.finishedAt = 0;
+  }
+
+  /* row events */
+  rowsEl.addEventListener("click", function(e){
+    var b = e.target.closest("button[data-meat]");
+    if(!b) return;
+    var id  = b.getAttribute("data-meat");
+    var dir = Number(b.getAttribute("data-dir"));
+    var cur = state.session.counts[id] || 0;
+    state.session.counts[id] = Math.max(0, cur + dir);
+    touchSession();
+    save(); syncRow(id); renderSummary();
+  });
+
+  rowsEl.addEventListener("input", function(e){
+    var inp = e.target.closest("input[data-meat]");
+    if(!inp) return;
+    var id = inp.getAttribute("data-meat");
+    var v = parseInt(inp.value.replace(/[^\d]/g, ""), 10);
+    if(isNaN(v)) v = 0;
+    v = Math.max(0, Math.min(999, v));
+    state.session.counts[id] = v;
+    touchSession();
+    save();
+    var row = inp.closest(".row");
+    if(row) row.classList.toggle("on", v > 0);
+    renderSummary();
+  });
+
+  rowsEl.addEventListener("blur", function(e){
+    var inp = e.target.closest("input[data-meat]");
+    if(inp){
+      var id = inp.getAttribute("data-meat");
+      inp.value = state.session.counts[id] || 0;
+      syncRow(id);
+    }
+  }, true);
+
+  /* start view */
+  document.querySelectorAll('button[data-step="people"]').forEach(function(b){
+    b.addEventListener("click", function(){
+      var dir = Number(b.getAttribute("data-dir"));
+      var v = (Number(state.session.people) || 0) + dir;
+      state.session.people = Math.max(1, Math.min(30, v));
+      document.getElementById("people").value = state.session.people;
+      save(); renderChip();
+    });
+  });
+
+  var peopleInput = document.getElementById("people");
+  peopleInput.addEventListener("input", function(){
+    var v = parseInt(peopleInput.value.replace(/[^\d]/g, ""), 10);
+    if(isNaN(v)) v = 1;
+    state.session.people = Math.max(1, Math.min(30, v));
+    save(); renderChip();
+  });
+  peopleInput.addEventListener("blur", function(){
+    peopleInput.value = state.session.people || 1;
+  });
+
+  var spendInput = document.getElementById("spend");
+  spendInput.addEventListener("input", function(){
+    state.session.spend = spendInput.value.trim();
+    document.getElementById("entryError").textContent = "";
+    save(); renderChip();
+  });
+
+  document.getElementById("startBtn").addEventListener("click", function(){
+    if (!ready) return;
+    var text = String(state.session.spend).trim();
+    if (!/^\d+(?:\.\d{1,2})?$/.test(text) || !Number.isFinite(Number(text)) || Number(text) <= 0) {
+      document.getElementById("entryError").textContent = "请填写全桌优惠后实际支付的套餐金额。";
+      spendInput.focus();
+      return;
+    }
+    if(totalPlates() > 0){
+      if(!confirm("这一餐已经记了 " + totalPlates() + " 盘。开新的一餐会清空这些盘数，确定吗？")) return;
+      state.session.counts = {};
+      state.session.finishedAt = 0;
+    }
+    state.session.started = true;
+    state.session.startedAt = Date.now();
+    save(); renderAll();
+    window.scrollTo(0,0);
+  });
+
+  resumeBtn.addEventListener("click", function(){
+    if (!ready) return;
+    state.session.started = true;
+    save(); renderAll();
+    window.scrollTo(0,0);
+  });
+
+  editChip.addEventListener("click", function(){
+    state.session.started = false;
+    save(); renderAll();
+    window.scrollTo(0,0);
+  });
+
+  /* result sheet */
+  var veilResult = document.getElementById("veilResult");
+
+  function renderResult(animate){
+    var t = totals();
+    var people = Number(state.session.people) || 0;
+
+    var vb = document.getElementById("verdictBox");
+    if(!t.items.length){
+      vb.innerHTML = '<div class="verdict"><div class="pct">—</div>' +
+        '<div class="vline">这一餐还没记肉。</div></div>';
+    }else{
+      var suggestion = "";
+      if(t.paid > 0 && t.cost < t.paid){
+        var best = null;
+        state.meats.forEach(function(m){
+          var u = unitCost(m);
+          if(u > 0 && (!best || u > best.u)) best = { name:m.name, u:u };
+        });
+        var need = (best && best.u > 0) ? Math.ceil(-t.diff / best.u) : 99;
+        if(need > 0 && need <= 5 && best){
+          suggestion = "再来 " + need + " 盘" + best.name + "就回本了";
+        }
+      }
+      vb.innerHTML = window.BuffetResultEffects.renderResultCard(t.cost, t.paid, animate, suggestion);
+    }
+
+    document.getElementById("statsBox").innerHTML =
+      '<div><span class="k">盘数</span><span class="v">' + totalPlates() + '</span></div>' +
+      '<div><span class="k">人均肉成本</span><span class="v">' + (people ? money(t.cost / people) : "—") + '</span></div>' +
+      '<div><span class="k">人均已付</span><span class="v">' + (people ? money(t.paid / people) : "—") + '</span></div>';
+
+    var box = document.getElementById("detail");
+    if(!t.items.length){
+      box.innerHTML = '<div class="empty">还没记肉。</div>';
+    }else{
+      box.innerHTML = t.items.map(function(it){
+        return '<div class="li"><span class="l">' + esc(it.name) + '</span>' +
+               '<span class="r"><em>×' + it.n + '</em>' + money(it.sub) + '</span></div>';
+      }).join("");
+    }
+
+    document.getElementById("resultTitle").textContent =
+      state.session.finishedAt ? "这一餐 · " + hhmm(state.session.finishedAt) + " 确认" : "这一餐的结果";
+  }
+
+  function openResult(markDone){
+    if(markDone){
+      state.session.finishedAt = Date.now();
+      save();
+    }
+    renderResult(!!markDone);
+    veilResult.classList.add("on");
+  }
+
+  confirmBtn.addEventListener("click", function(){
+    if(totalPlates() === 0) return;
+    openResult(true);
+  });
+
+  document.getElementById("tapCost").addEventListener("click", function(){ openResult(false); });
+  document.getElementById("tapDiff").addEventListener("click", function(){ openResult(false); });
+  document.getElementById("closeResult").addEventListener("click", function(){
+    veilResult.classList.remove("on");
+  });
+
+  document.getElementById("newMeal").addEventListener("click", function(){
+    if(!confirm("清空这一餐的盘数，从新的一餐开始？")) return;
+    var p = state.session.people, s = state.session.spend;
+    state.session = freshSession();
+    state.session.people = p;
+    state.session.spend = s;
+    state.session.started = false;
+    save(); renderAll();
+    veilResult.classList.remove("on");
+    window.scrollTo(0,0);
+  });
+
+  document.querySelectorAll("[data-close]").forEach(function(button) {
+    button.addEventListener("click", function() { veilResult.classList.remove("on"); });
+  });
+  veilResult.addEventListener("click", function(event) {
+    if (event.target === veilResult) veilResult.classList.remove("on");
+  });
+
+  async function fetchMenu() {
+    if (reading) return;
+    reading = true;
+    ready = false;
+    var start = document.getElementById("startBtn");
+    var retry = document.getElementById("retryPrices");
+    var status = document.getElementById("priceStatus");
+    start.disabled = resumeBtn.disabled = true;
+    retry.hidden = true;
+    viewRec.classList.add("hide"); dock.classList.add("hide"); editChip.classList.add("hide");
+    veilResult.classList.remove("on"); viewStart.classList.remove("hide");
+    rowsEl.replaceChildren(); state.meats = [];
+    status.textContent = "正在读取老板保存的示例肉价…";
+    try {
+      var response = await fetch(priceUrl, {cache:"no-store", credentials:"omit", redirect:"error",
+        referrerPolicy:"no-referrer", signal:AbortSignal.timeout(15000)});
+      if (!response.ok) throw new Error();
+      var data = await response.json();
+      if (data.error || !Number.isSafeInteger(data.savedAt) || data.savedAt <= 0 || !data.prices ||
+          typeof data.prices !== "object" || Array.isArray(data.prices)) throw new Error();
+      state.meats = DEFAULT_MEATS.map(function(item) {
+        var price = data.prices[item.name];
+        if (typeof price !== "number" || !Number.isFinite(price) || price < 0 || price > 100000) throw new Error();
+        return {...item, price:price};
+      });
+      ready = true;
+      start.disabled = resumeBtn.disabled = false;
+      status.textContent = "已读取老板保存的六项示例肉价 · 更新于 " + new Date(data.savedAt).toLocaleTimeString("zh-CN",{hour12:false});
+      renderAll();
+    } catch (error) {
+      status.textContent = "暂未读到完整价表，请重新读取后再开始记盘。";
+      retry.hidden = false;
+    } finally { reading = false; }
+  }
+
+  /* boot */
+  document.getElementById("retryPrices").addEventListener("click", fetchMenu);
+  window.addEventListener("pageshow", function(event) { if (event.persisted) fetchMenu(); });
+  fetchMenu();
+})();
+</script>
+</body>
+</html>
