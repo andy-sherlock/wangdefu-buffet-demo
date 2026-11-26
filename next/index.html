@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8eb">
+<title>王德福 · 今天这顿吃回本了吗？</title>
+<style>
+  :root{
+    --bg:#EDEFE9;
+    --surface:#FDFDFB;
+    --line:#C7CEC3;
+    --line-soft:#DDE2D8;
+    --ink:#12180F;
+    --ink-2:#4A544A;
+    --ink-3:#8A938A;
+    --good:#1F5C46;
+    --bad:#9C3B2A;
+    --accent:#1F5C46;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;
+    font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;
+  }
+  .shell{max-width:460px;margin:0 auto;min-height:100vh;background:var(--bg);
+    border-left:1px solid var(--line-soft);border-right:1px solid var(--line-soft);
+    display:flex;flex-direction:column}
+
+  /* header */
+  header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+    padding:13px 18px 12px;display:flex;align-items:center;gap:10px}
+  .mark{width:9px;height:9px;background:var(--accent);flex:0 0 auto}
+  .brand{flex:1;min-width:0}
+  .brand h1{margin:0;font-size:15px;font-weight:600;letter-spacing:.02em}
+  .brand p{margin:2px 0 0;font-size:10px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .chip{border:1px solid var(--line);background:transparent;color:var(--ink-2);font-family:var(--mono);
+    font-size:11px;padding:6px 9px;cursor:pointer;border-radius:1px;white-space:nowrap}
+  .gear{border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    width:30px;height:30px;font-size:13px;line-height:1;cursor:pointer;border-radius:1px;flex:0 0 auto}
+
+  main{flex:1;padding:0 18px}
+  .hide{display:none !important}
+
+  /* start view */
+  .start{padding:28px 0 24px}
+  .start .lead{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+  .start h2{margin:0 0 6px;font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+  .start .sub{margin:0 0 26px;font-size:12px;color:var(--ink-3);line-height:1.6}
+  .block{border:1px solid var(--line);background:var(--surface);padding:12px 14px 14px;margin-bottom:12px}
+  .block label{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:9px}
+  .stepper{display:flex;align-items:stretch;border:1px solid var(--line);background:var(--bg)}
+  .stepper button{width:44px;border:0;background:transparent;font-size:19px;color:var(--ink);
+    cursor:pointer;font-family:var(--mono);padding:0;line-height:1}
+  .stepper button:active{background:var(--line-soft)}
+  .stepper input{flex:1;min-width:0;width:100%;border:0;background:transparent;text-align:center;
+    font-family:var(--mono);font-size:18px;color:var(--ink);padding:10px 0;outline:none}
+  .money{display:flex;align-items:center;border:1px solid var(--line);background:var(--bg);padding:0 12px}
+  .money span{font-family:var(--mono);font-size:14px;color:var(--ink-3)}
+  .money input{flex:1;min-width:0;border:0;background:transparent;font-family:var(--mono);
+    font-size:18px;color:var(--ink);padding:10px 8px;outline:none;text-align:right}
+  .go{width:100%;border:0;background:var(--ink);color:#fff;padding:16px;font-size:15px;
+    letter-spacing:.08em;cursor:pointer;border-radius:1px;margin-top:6px}
+  .go:active{opacity:.85}
+  .resume{width:100%;border:1px solid var(--line);background:transparent;color:var(--ink-2);
+    padding:13px;font-size:13px;cursor:pointer;border-radius:1px;margin-top:10px;font-family:inherit}
+  .start .tip{margin:18px 0 0;font-size:11px;color:var(--ink-3);line-height:1.7}
+
+  /* rows */
+  .rows{padding:10px 0 6px}
+  .row{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line-soft);padding:11px 0}
+  .row:first-child{border-top:1px solid var(--line-soft)}
+  .row.on{background:#F1F6EC}
+  .rimg{width:54px;height:54px;flex:0 0 auto;border:1px solid var(--line-soft);
+    background:repeating-linear-gradient(135deg,#E4E8E0 0 1px,transparent 1px 7px);
+    display:flex;align-items:center;justify-content:center}
+  .rimg b{font-family:var(--mono);font-size:14px;color:#AEB6AB;font-weight:400}
+  .row.on .rimg{border-color:var(--accent)}
+  .row.on .rimg b{color:var(--accent)}
+  .rmain{flex:1;min-width:0}
+  .rname{font-size:14px;font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rprice{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:3px}
+  .stepper.sm{border-color:var(--line);flex:0 0 auto;width:132px}
+  .stepper.sm button{width:40px;font-size:16px}
+  .stepper.sm input{font-size:16px;padding:8px 0}
+  .footnote{padding:14px 0 20px;font-size:10px;color:var(--ink-3);line-height:1.7}
+
+  /* dock */
+  .dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--bg);border-top:1px solid var(--ink)}
+  .dock-in{max-width:460px;margin:0 auto;padding:0 18px calc(6px + env(safe-area-inset-bottom,0px))}
+  .dockgrid{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;padding:11px 0 12px}
+  .dcell{cursor:pointer}
+  .dcell .k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:2px}
+  .dcell .v{font-family:var(--mono);font-size:16px;letter-spacing:-.02em;display:block}
+  .dcell .v.big{font-size:20px}
+  .dcell .v.good{color:var(--good)}
+  .dcell .v.bad{color:var(--bad)}
+  .dcell .sub{font-family:var(--mono);font-size:10px;color:var(--ink-3);display:block;margin-top:2px}
+  .confirm{border:0;background:var(--ink);color:#fff;font-size:13px;letter-spacing:.1em;
+    padding:13px 16px;cursor:pointer;border-radius:1px;font-family:inherit;white-space:nowrap}
+  .confirm:active{opacity:.85}
+  .confirm[disabled]{background:var(--line);color:#fff;cursor:not-allowed}
+  .bar{height:3px;background:var(--line-soft);position:relative;margin-bottom:2px}
+  .bar em{position:absolute;left:0;top:0;bottom:0;background:var(--accent);display:block}
+
+  /* sheet */
+  .veil{position:fixed;inset:0;background:rgba(18,24,15,.42);z-index:50;display:none;
+    align-items:flex-end;justify-content:center}
+  .veil.on{display:flex}
+  .sheet{width:100%;max-width:460px;background:var(--surface);border-top:1px solid var(--ink);
+    max-height:92vh;overflow-y:auto}
+  .sheet-head{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--line);
+    padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:2}
+  .sheet-head h3{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em}
+  .x{border:1px solid var(--line);background:transparent;width:28px;height:28px;cursor:pointer;
+    font-size:14px;line-height:1;color:var(--ink-2);border-radius:1px}
+  .sheet-body{padding:16px 18px 26px}
+
+  /* verdict */
+  .verdict{position:relative;border:1px solid var(--ink);padding:20px 18px 18px;margin-bottom:18px;overflow:hidden}
+  .verdict .pct{font-family:var(--mono);font-size:52px;line-height:.95;letter-spacing:-.04em}
+  .verdict .pct i{font-style:normal;font-size:22px;letter-spacing:0;margin-left:2px}
+  .verdict .vline{font-size:13px;color:var(--ink-2);margin-top:10px}
+  .verdict .vline.strong{font-size:19px;font-weight:600;color:var(--ink);margin-top:12px;letter-spacing:-.01em}
+  .verdict.hit .vline.strong{color:var(--good)}
+  .verdict.miss .vline.strong{color:var(--bad)}
+  .verdict .small{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:6px}
+  .verdict.hit{border-color:var(--good)}
+  .verdict.hit .pct{color:var(--good)}
+  .verdict.miss{border-color:var(--bad)}
+  .verdict.miss .pct{color:var(--bad)}
+  .stamp{position:absolute;top:14px;right:12px;border:2px solid currentColor;padding:5px 9px;
+    font-size:12px;letter-spacing:.18em;transform:rotate(-8deg);opacity:.85;border-radius:2px}
+  .verdict.hit .stamp{color:var(--good)}
+  .verdict.miss .stamp{color:var(--bad)}
+  .stamp.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+  @keyframes pop{
+    0%{transform:rotate(-8deg) scale(2.1);opacity:0}
+    60%{transform:rotate(-8deg) scale(.96);opacity:.95}
+    100%{transform:rotate(-8deg) scale(1);opacity:.85}
+  }
+
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--line);margin-bottom:18px}
+  .stats div{padding:10px 12px;border-right:1px solid var(--line)}
+  .stats div:last-child{border-right:0}
+  .stats .k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:3px}
+  .stats .v{font-family:var(--mono);font-size:14px}
+
+  .li{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dotted var(--line)}
+  .li .l{font-size:13px}
+  .li .r{font-family:var(--mono);font-size:13px}
+  .li .r em{font-style:normal;color:var(--ink-3);font-size:11px;margin-right:8px}
+  .empty{font-size:12px;color:var(--ink-3);padding:14px 0}
+  .note{font-size:10px;color:var(--ink-3);line-height:1.6;padding:14px 0 0}
+  .rowbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .rowbtns button{padding:14px;font-size:13px;letter-spacing:.06em;cursor:pointer;border-radius:1px;font-family:inherit}
+  .rowbtns .ghost{border:1px solid var(--line);background:transparent;color:var(--ink-2)}
+  .rowbtns .dark{border:0;background:var(--ink);color:#fff}
+
+  /* settings */
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-bottom:16px}
+  .tabs button{border:0;border-right:1px solid var(--line);background:transparent;padding:9px 2px;
+    font-size:11px;color:var(--ink-3);cursor:pointer}
+  .tabs button:last-child{border-right:0}
+  .tabs button.on{background:var(--ink);color:#fff}
+  .tabs button:disabled{opacity:.45;cursor:not-allowed}
+  .cfgrow{border-bottom:1px solid var(--line-soft);padding:11px 0}
+  .cfgrow .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .cfgrow .top b{font-size:13px;font-weight:600}
+  .cfgrow .top span{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .cfginputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cfginputs label{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);margin-bottom:4px}
+  .cfginputs input{width:100%;border:1px solid var(--line);background:var(--bg);padding:8px;
+    font-family:var(--mono);font-size:14px;color:var(--ink);outline:none}
+  .warn{background:#F6F1E4;border:1px solid #E0D6BC;padding:10px 12px;font-size:11px;
+    color:#6B5B33;line-height:1.55;margin-bottom:16px}
+  .save{width:100%;border:0;background:var(--ink);color:#fff;padding:14px;font-size:14px;
+    letter-spacing:.06em;cursor:pointer;margin-top:18px;border-radius:1px}
+  .codebox{display:flex;gap:8px;margin-top:6px}
+  .codebox input{flex:1;border:1px solid var(--line);background:var(--bg);padding:12px;
+    font-family:var(--mono);font-size:16px;letter-spacing:.3em;text-align:center;outline:none;color:var(--ink)}
+  .codebox button{border:0;background:var(--ink);color:#fff;padding:0 20px;font-size:13px;cursor:pointer}
+  .hint{font-size:11px;color:var(--ink-3);margin-top:10px;line-height:1.6}
+  .disabled-note{font-size:12px;color:var(--ink-3);padding:24px 0;text-align:center;line-height:1.7}
+</style>
+<link rel="stylesheet" href="style.css">
+<style>
+  [hidden]{display:none!important}.net-status,.entry-error{font-size:12px;line-height:1.5}
+  .net-status{color:#775d4b;margin:10px 0 3px}.entry-error{color:#a82d24;margin:0}
+  .go:disabled{opacity:.55;cursor:wait}.rmeta{font-size:10px;color:#7d624f;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <span class="mark"></span>
+    <div class="brand">
+      <h1>王德福</h1>
+      <p id="brandNote">自助小账本</p>
+    </div>
+    <button class="chip hide" id="editChip">2 人 · ¥258</button>
+    
+  </header>
+
+  <!-- 进入前 -->
+  <main id="viewStart" class="start">
+    <section class="hero" aria-label="自助餐肉类回本计算器">
+      <div class="hero-copy">
+        <p class="hero-eyebrow"><span>✳</span> 自助小账本</p>
+        <h2>今天这顿<br><strong>吃回本了吗？</strong></h2>
+        <p class="hero-sub">一盘一盘记，<br>快乐慢慢攒。</p>
+      </div>
+      <span class="hero-stamp" aria-hidden="true">肉肉<br>开吃</span>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 230 205" xmlns="http://www.w3.org/2000/svg">
+          <path d="M89 31c-8-12 8-15 2-26M122 33c-8-12 8-15 2-26M154 34c-7-10 7-14 2-24" fill="none" stroke="#e68155" stroke-width="6" stroke-linecap="round" opacity=".8"/>
+          <path d="M42 67c-24-5-29 3-25 14 2 6 10 9 24 10M188 67c24-5 29 3 25 14-2 6-10 9-24 10" fill="none" stroke="#6f3c30" stroke-width="12" stroke-linecap="round"/>
+          <ellipse cx="115" cy="176" rx="74" ry="10" fill="#bd6d3c" opacity=".25"/>
+          <path d="M34 73c3 67 22 100 81 100s78-33 81-100Z" fill="#e96545" stroke="#703e30" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M45 100c5 38 19 60 40 66" fill="none" stroke="#ff9d73" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+          <ellipse cx="115" cy="74" rx="81" ry="36" fill="#fff5da" stroke="#703e30" stroke-width="6"/>
+          <ellipse cx="115" cy="73" rx="69" ry="26" fill="#de6945"/>
+          <path d="M52 76c14-13 31-16 44-7 12 8 23 9 37 1 16-9 33-5 44 5-8 15-32 24-62 24S61 90 52 76Z" fill="#f5a45d"/>
+          <path d="M74 62c8-10 20-12 27-4s-1 17-10 19c-11 3-23-6-17-15Z" fill="#ef9a82" stroke="#b95646" stroke-width="3"/>
+          <path d="M81 63c5 0 9 3 11 7M137 57c8-8 19-8 25-1s0 16-10 18c-11 1-21-8-15-17Z" fill="#f3ae96" stroke="#c25e4b" stroke-width="3" stroke-linecap="round"/>
+          <path d="M145 60c4-1 8 1 10 4" fill="none" stroke="#fff0da" stroke-width="3" stroke-linecap="round"/>
+          <path d="M105 51c-3-10 3-17 9-17 0 7 2 11 8 14 4-9 12-9 16-5-1 10-7 16-15 18" fill="#67a95a" stroke="#447749" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="61" cy="77" r="4" fill="#fff0bc"/><circle cx="172" cy="79" r="4" fill="#fff0bc"/><circle cx="116" cy="84" r="3" fill="#fff0bc"/>
+          <circle cx="93" cy="125" r="4" fill="#633b2e"/><circle cx="137" cy="125" r="4" fill="#633b2e"/>
+          <path d="M105 136c6 7 14 7 20 0" fill="none" stroke="#633b2e" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="81" cy="135" rx="8" ry="4" fill="#f99e83"/><ellipse cx="149" cy="135" rx="8" ry="4" fill="#f99e83"/>
+          <path d="M34 37l3 7 7 3-7 3-3 7-3-7-7-3 7-3ZM191 34l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#fff8dc"/>
+        </svg>
+      </div>
+    </section>
+
+    <section class="start-card" aria-label="填写就餐信息">
+      <div class="section-heading">
+        <span class="section-icon" aria-hidden="true">✎</span>
+        <div><h3>先安排一下这一桌</h3><p>填完就可以开始记肉啦</p></div>
+      </div>
+      <div class="block">
+        <div class="field-label"><label for="people">几个人吃</label><small>一起记录这一桌</small></div>
+        <div class="stepper">
+          <button data-step="people" data-dir="-1" aria-label="减少人数">−</button>
+          <input id="people" type="text" inputmode="numeric" value="2" aria-label="就餐人数">
+          <button data-step="people" data-dir="1" aria-label="增加人数">+</button>
+        </div>
+      </div>
+      <div class="block">
+        <div class="field-label"><label for="spend">全桌套餐实付</label><small>填优惠后实际支付的金额</small></div>
+        <div class="money"><span>¥</span><input id="spend" type="text" inputmode="decimal" value="" placeholder="实际支付金额" aria-label="全桌实际支付金额"></div>
+      </div>
+      <p class="net-status" id="priceStatus" role="status" hidden></p>
+      <button class="resume" id="retryPrices" type="button" hidden>重新读取肉价</button>
+      <p class="entry-error" id="entryError" role="alert"></p>
+      <p class="entry-error" id="storageStatus" role="status"></p>
+      <button class="go" id="startBtn" disabled>开始记这一餐</button>
+      <button class="resume hide" id="resumeBtn" disabled></button>
+    </section>
+    <p class="tip"><span class="tip-star" aria-hidden="true">✦</span><span id="sampleTip">记下套餐内的肉，就能查看这餐的估算结果。</span></p>
+  </main>
+
+  <!-- 记录页 -->
+  <main id="viewRecord" class="hide">
+    <div class="record-intro">
+      <div><p class="record-eyebrow">今天的肉肉小账本</p><h2>拿一盘，记一盘 <span>✦</span></h2><p>吃了什么，轻轻一点就记下</p></div>
+      <span class="record-stamp" aria-hidden="true">🍽</span>
+    </div>
+    <div class="list-heading"><strong>今天吃了这些</strong><span id="listInfo">套餐内肉类</span></div>
+    <p class="entry-error" id="storageStatusRecord" role="status"></p>
+    <p class="entry-error" id="countError" role="status"></p>
+    <div class="rows" id="rows"></div>
+    <p class="footnote">这是已记录肉类的采购成本估算，不等于整顿饭的全部价值，也不等于店铺实际盈亏。</p>
+  </main>
+</div>
+
+<div class="dock hide" id="dock">
+  <div class="dock-in">
+    <div class="dockgrid">
+      <div class="dcell" id="tapCost">
+        <span class="k">肉成本</span>
+        <span class="v big" id="sCost">¥0</span>
+        <span class="sub" id="sPaidSub">已付 ¥0</span>
+      </div>
+      <div class="dcell" id="tapDiff" style="text-align:left">
+        <span class="k" id="sDiffK">还差</span>
+        <span class="v" id="sDiff">¥0</span>
+      </div>
+      <button class="confirm" id="confirmBtn">确认吃完</button>
+    </div>
+    <div class="bar"><em id="barFill" style="width:0%"></em></div>
+  </div>
+</div>
+
+<!-- 结果 / 明细 -->
+<div class="veil" id="veilResult">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h3 id="resultTitle">这一餐的结果</h3>
+      <button class="x" data-close="veilResult">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="verdictBox"></div>
+      <div class="stats" id="statsBox"></div>
+      <div id="detail"></div>
+      <div class="note">按老板提供的每斤进价与每盘生重估算，只含肉类，不代表整顿饭的价值，也不是店铺的盈亏。</div>
+      <div class="rowbtns">
+        <button class="ghost" id="closeResult">继续记</button>
+        <button class="dark" id="newMeal">开新的一餐</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="bundledMenu" type="application/json">
+{"storeId":"wangdefu","purpose":"sample","formatVersion":1,"version":1,"savedAt":1795527451827,"source":"trial-prices","items":[
+{"id":"m1","name":"猪肉","category":"meat","active":true,"price":20,"grams":120,"image":"emoji:🥩"},
+{"id":"m2","name":"猪高钙","category":"meat","active":true,"price":22,"grams":120,"image":"emoji:🥓"},
+{"id":"m3","name":"原切梅花","category":"meat","active":true,"price":28,"grams":120,"image":"emoji:🥩"},
+{"id":"m4","name":"原切谷饲眼肉","category":"meat","active":true,"price":68,"grams":120,"image":"emoji:🥩"},
+{"id":"m5","name":"原切松板","category":"meat","active":true,"price":36,"grams":120,"image":"emoji:🥓"},
+{"id":"m6","name":"奥尔良鸡肉","category":"meat","active":true,"price":14,"grams":120,"image":"emoji:🍗"}]}
+</script>
+<script src="result-effects.js"></script>
+<script src="customer.js"></script>
+</body>
+</html>
